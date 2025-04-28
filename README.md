@@ -1,7 +1,8 @@
 
 # Country Metrics Web App
 
-A web application that visualises GDP per capita, net migration, unemployment rate, total population and population growth for up to five countries over a selectable year range.
+I initially set out to analyse and visually compare the social and economic changes my country (Turkey) has undergone, but the fact that my sources were datasets covering most countries around the world distracted me. While working on the main project, I ended up using plenty of charts for other countries as well, causing the project to evolve into a broader endeavour than I had originally planned.
+Now its a web application that visualises GDP per capita, net migration, unemployment rate, total population and population growth for up to five countries over a selectable year range.
 
 * **Frontend:** React + MUI + react‑plotly.js  
 * **Backend:** Flask + pandas  
