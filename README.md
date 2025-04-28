@@ -1,7 +1,7 @@
 
 # Country Metrics Web App
 
-A full‑stack web application that visualises GDP per capita, net migration, unemployment rate, total population and population growth for up to five countries over a selectable year range.
+A web application that visualises GDP per capita, net migration, unemployment rate, total population and population growth for up to five countries over a selectable year range.
 
 * **Frontend:** React + MUI + react‑plotly.js  
 * **Backend:** Flask + pandas  
@@ -15,12 +15,12 @@ cd backend
 python -m venv venv
 source venv/bin/activate           # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python app.py                      # 📡 runs on http://localhost:5000
+python app.py                      
 
 # 2. Frontend
 cd ../frontend
 npm install
-npm start                          # 🌐 opens http://localhost:3000
+npm start                          
 ```
 
 The React dev server proxies API calls to the Flask backend.
