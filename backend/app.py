@@ -108,33 +108,43 @@ def filter_df(df, countries, start_year, end_year):
 @app.route('/data')
 def data():
     countries = request.args.get('countries', '').split(',')
-    metrics = request.args.get('metrics', '').split(',')
+    metrics   = request.args.get('metrics', '').split(',')
     start_year = int(request.args.get('start_year'))
-    end_year = int(request.args.get('end_year'))
+    end_year   = int(request.args.get('end_year'))
 
     output = {}
     for metric in metrics:
         if metric not in metric_frames:
             continue
-        df = filter_df(metric_frames[metric], countries, start_year, end_year)
-        records = (
-            df.groupby('Country Code')
-            .apply(
-                lambda g: {
-                    'countryName': g['Country Name'].iloc[0],
-                    'years': g['Year'].tolist(),
-                    # NaN'leri JavaScript'in anlayacağı None/null'a dönüştür
-                    'values': g['Value'].where(g['Value'].notna(), None).tolist()
-                }
-            )
-            .to_dict()
+
+        df = metric_frames[metric]
+        mask = (
+            df['Country Code'].isin(countries) &
+            df['Year'].between(start_year, end_year)
         )
 
-        output[metric] = {
-            'label': METRICS.get(metric, {}).get('title', metric),
-            'series': records
-        }
+        df_filtered = df[mask & df['Value'].notna()]
+
+        if df_filtered.empty:
+            continue
+
+        records = (
+            df_filtered.groupby('Country Code')
+            .apply(lambda g: {
+                'countryName': g['Country Name'].iloc[0],
+                'years' : g['Year'].tolist(),
+                'values': g['Value'].tolist()   
+            })
+            .to_dict()
+        )
+        if records:                      
+            output[metric] = {
+                'label' : METRICS.get(metric, {}).get('title', metric),
+                'series': records
+            }
+
     return jsonify(output)
+
 
 @app.route('/download')
 def download_csv():
