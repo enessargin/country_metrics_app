@@ -71,7 +71,7 @@ export default function App() {
       <Plot
         data={plotData}
         layout={{
-          title: 'Country Metrics',
+          title: 'Country Metrics by Enes SARGIN',
           xaxis: { title: 'Year' },
           yaxis: { title: 'Value' },
           legend: { orientation: 'h' },
