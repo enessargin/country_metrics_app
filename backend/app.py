@@ -32,28 +32,19 @@ METRICS = {
 import csv
 
 def load_metric_df(csv_file: str) -> pd.DataFrame:
-    """
-    World-Bank CSV’sini oku → uzun (tidy) formata çevir.
 
-    Dosyanın ilk 4 satırı meta-veri, 5. satır gerçek başlık.  
-    skiprows=4 ile atlıyoruz, engine='python' ile gömülü virgül/tırnak
-    karakterlerinden kaynaklı ParserError riskini sıfırlıyoruz.
-    """
     path = os.path.join(DATA_DIR, csv_file)
 
-    # ↘️ 1) Geniş formda oku
     df_wide = pd.read_csv(
         path,
-        skiprows=4,        # ← kritik satır (0-indexed; ilk 4 satırı atla)
-        engine='python',   # C-engine hatalarını engelle
+        skiprows=4,       
+        engine='python',   
         dtype=str
     )
 
-    # ↘️ 2) Yıl sütunlarını yakala
     year_cols = [c for c in df_wide.columns if c.isdigit()]
     id_cols = ['Country Name', 'Country Code']
 
-    # ↘️ 3) Uzun forma (tidy) çevir
     df_long = df_wide.melt(
         id_vars=id_cols,
         value_vars=year_cols,
@@ -73,7 +64,6 @@ metric_frames = {}
 for key, meta in METRICS.items():
     metric_frames[key] = load_metric_df(meta['file'])
 
-# Derive population growth (% change year‑over‑year) from total population
 pop_df = metric_frames['total_population']
 pop_df = pop_df.sort_values(['Country Code', 'Year'])
 pop_df['Value'] = pop_df.groupby('Country Code')['Value'].pct_change() * 100
@@ -83,7 +73,6 @@ METRICS['population_growth'] = {
 }
 metric_frames['population_growth'] = pop_df.copy()
 
-# Metadata
 COUNTRIES = (metric_frames['gdp_per_capita'][['Country Name', 'Country Code']]
              .drop_duplicates()
              .sort_values('Country Name')
